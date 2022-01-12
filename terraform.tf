@@ -60,3 +60,23 @@ resource "scaleway_instance_server" "Grafana" {
 #  backup_schedule_frequency = 24
 #  backup_schedule_retention = 7
 #}
+
+resource "scaleway_instance_server" "Nextcloud" {
+  name = "Nextcloud"
+  type = "GP1-XS"
+  image = "ubuntu_focal"
+  ip_id = scaleway_instance_ip.public_ip.id
+  private_network {
+    pn_id = scaleway_vpc_private_network.pn_priv.id
+
+  provisioner "remote-exec" {
+    inline = ["sudo apt update", "apt -y install python python-apt", "echo OK!"]
+    connection {
+      host = scaleway_instance_server.Nexcloud.public_ip
+      type = "ssh"
+      user = "root"
+      private_key = file("/home/sysadmin/.ssh/id_rsa")
+    }
+  }
+}
+}
