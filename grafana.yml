@@ -12,6 +12,43 @@
       - gnupg
       - gnupg1
       - gnupg2
+    grafana_admin_pwd: "Epsi2022!123"
+    node_exporter_version: "1.3.1"
+    node_exporter_bin: /usr/local/bin/node_exporter
+    node_exporter_user: node-exporter
+    node_exporter_group: "{{ node_exporter_user }}"
+    node_exporter_dir_conf: /etc/node_exporter
+    prometheus_dir_config: "/etc/prometheus"
+    prometheus_rentention_time: "365d"
+    prometheus_scrape_interval: "30s"
+    prometheus_node_exporter: true
+    prometheus_node_exporter_group: "all"
+    prometheus_env: "production"
+    prometheus_var_conf:
+      global:
+        scrape_interval: "{{ prometheus_scrape_interval }}"
+        evaluation_interval: 5s
+        external_labels:
+          env: '{{ prometheus_env }}'
+      scrape_configs:
+        - job_name: prometheus
+          scrape_interval: 5m
+          static_configs:
+            - targets: ['{{ inventory_hostname }}:9090']
+
+  handlers:
+    - name: restart_prometheus
+      systemd:
+        name: prometheus
+        state: restarted
+        enabled: yes
+        daemon_reload: yes
+
+    - name: reload_prometheus
+      uri:
+        url: "http://localhost:9090/-/reload"
+        method: POST
+        status_code: 200
 
   tasks:
     - name: Création de l'utilisateur Grafana
@@ -47,27 +84,90 @@
         state: started
         daemon_reload: true
 
-    - name: Importation clé GPG de InfluxDB
-      apt_key:
-        url: "https://repos.influxdata.com/influxdb.key"
-        state: present
+    - name: Attente du démarrage du service grafana
+      uri:
+        url: "http://127.0.0.1:3000"
+        status_code: 200
+      register: __result
+      until: __result.status == 200
+      retries: 120
+      delay: 1
+
+    - name: Changement du mot de passe de connexion à grafana
+      shell: "grafana-cli admin reset-admin-password {{ grafana_admin_pwd }}"
+      register: __comand_admin
+      changed_when: __command_admin.rc !=0
+
+    - name: Création de l'utilisateur nod_exporter:
+      user:
+        name: "{{ node_exporter_user }}"
+        append: true
+        shell: /usr/sbin/nologin
+        system: true
+        create_home: false
+        home: /
+    
+    - name: Création du dossier de config de node_exporter
+      file:
+        path: "{{ node_exporter_dir_conf }}"
+        state: directory
+        owner: "{{ node_exporter_user }}"
+        group: "{{ node_exporter_group }}"
+
+    - name: Téléchargement et dezip de l'archive node_exporter
+      unarchive:
+        src: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+        dest: /tmp/
+        remote_src: yes
         validate_certs: false
 
-    - name: Ajout du dépôt de InfluxDB
-      apt_repository:
-        repo: deb https://repos.influxdata.com/ubuntu/ focal stable
-        state: present
-        update_cache: true
+    - name: Déplacement du binaire node_exporter
+      copy:
+        src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
+        dest: "{{ node_exporter_bin }}"
+        owner: "{{ node_exporter_user }}"
+        group: "{{ node_exporter_group }}"
+        mode: 0755
+        remote_src: yes
+    
+    - name: Nettoyage 
+      file:
+        path: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/"
+        state: absent
+    - name: Création de l'utilisateur prometheus
+      user:
+        name: prometheus
+        group: prometheus
 
-    - name: Installation de InfluxDB
+    - name: Installation de prometheus
       apt:
-        name: influxdb
+        name: prometheus
+        state: latest
+        update_cache: yes
+        cache_valid_time: 3600
 
-    - name: Activation du service InfluxDB au démarre de l'instance
-      systemd:
-        name: influxdb
-        enabled: true
+    - name: prometheus args
+      template:
+        src: prometheus.j2
+        dest: /etc/default/prometheus
+        mode: 0644
+        owner: root
+        group: root
+      notify: restart_prometheus
+
+    - meta: flush_handlers
+
+    - name: prometheus fichier de configuration
+      template:
+        src: prometheus.yml.j2
+        dest: "{{ prometheus_dir_config }}/prometheus.yml"
+        mode: 0755
+        owner: prometheus
+        group: prometheus
+      notify: reload_prometheus
+
+    - name: Activation du service Prmetheus au démarre de l'instance
+      systemd: prometheus
+        name: prometheus
         state: started
-        daemon_reload: true
-
-
+        enabled: yes
