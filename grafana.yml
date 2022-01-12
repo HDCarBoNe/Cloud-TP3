@@ -7,6 +7,11 @@
       - apt-transport-https
       - software-properties-common
       - wget
+      - ca-certificates
+      - libfontconfig
+      - gnupg
+      - gnupg1
+      - gnupg2
 
   tasks:
     - name: Création de l'utilisateur Grafana
@@ -19,19 +24,50 @@
         name: "{{ item }}"
       loop: "{{ dependances }}"
 
-    - name: Installation dernière release OSS de grafana 1/2
+    - name: Importation clé GPG de Grafana
       apt_key:
-        url: https://packages.grafana.com/gpg.key
+        url: "https://packages.grafana.com/gpg.key"
         state: present
+        validate_certs: false
 
-    - name: Installation dernière release OSS de grafana 2/2
-      command : echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
-
-    - name: Mise à jour des dépôts
-      apt:
+    - name: Ajout du dépôt de Grafana
+      apt_repository:
+        repo: deb https://packages.grafana.com/oss/deb stable main
+        state: present
         update_cache: true
-        force_apt_get: true
 
     - name: Installation de grafana
       apt:
         name: grafana
+
+    - name: Activation du service Grafana au démarre de l'instance
+      systemd:
+        name: grafana-server
+        enabled: true
+        state: started
+        daemon_reload: true
+
+    - name: Importation clé GPG de InfluxDB
+      apt_key:
+        url: "https://repos.influxdata.com/influxdb.key"
+        state: present
+        validate_certs: false
+
+    - name: Ajout du dépôt de InfluxDB
+      apt_repository:
+        repo: deb https://repos.influxdata.com/ubuntu/ focal stable
+        state: present
+        update_cache: true
+
+    - name: Installation de InfluxDB
+      apt:
+        name: influxdb
+
+    - name: Activation du service InfluxDB au démarre de l'instance
+      systemd:
+        name: influxdb
+        enabled: true
+        state: started
+        daemon_reload: true
+
+

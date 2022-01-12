@@ -49,10 +49,14 @@ resource "scaleway_instance_server" "Grafana" {
   }
 }
 
-resource "scaleway_rdb_instance" "main" {
-  name           = "Nextcloud-DB1"
-  node_type      = "DB-GP-XS"
-  engine         = "MySQL-8"
-  is_ha_cluster  = true
-  disable_backup = true
-}
+#resource "scaleway_rdb_instance" "main" {
+#  name           = "Nextcloud-DB1"
+#  node_type      = "DB-GP-XS"
+#  engine         = "MySQL-8"
+#  is_ha_cluster  = true
+#  disable_backup = true
+#  user_name      = "BDDAdmin"
+#  password       = "EPSI2022!BDD"
+#  backup_schedule_frequency = 24
+#  backup_schedule_retention = 7
+#}
