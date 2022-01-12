@@ -37,10 +37,10 @@
         name: "{{ item }}"
       loop: "{{ dependances }}"
 
-    - name: Installation des dépendances system
+    - name: Installation des dépendances Python
       pip:
         name: "{{ item }}"
-      loop: "{{ dependances }}"
+      loop: "{{ python }}"
 
     - name: Telecharger Nextcloud via wget
       wget:
