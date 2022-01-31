@@ -20,7 +20,7 @@ Le script terraform permet le déployement sur le provider scaleway:
 
 Des scripts Ansible accompagne le script terraform:
 
- *grafana.yml:
+1. grafana.yml:
     
     - Permet l'installation et la préconfiguration de grafana
     - L'installation de prometheus
@@ -28,8 +28,7 @@ Des scripts Ansible accompagne le script terraform:
     - Création de l'utilisateur prometheus sur l'instance déployer
     - Changement du mot de passe de l'utilisateur admin de grafana
     - Ajout de node_exporter pour la supervision des données de grafana
-
- *nextcloud.yml:
+2. nextcloud.yml:
     
     - Création de l'utilisateur nextcloud sur l'instance déployer
     - Installation d'Apache2
