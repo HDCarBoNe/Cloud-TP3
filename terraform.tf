@@ -89,27 +89,27 @@ resource "scaleway_instance_server" "Grafana" {
   }
 }
 
-# resource "scaleway_rdb_instance" "Nextcloud-DB1" {
-#  name           = "Nextcloud-DB1"
-#  node_type      = "DB-GP-XS"
-#  engine         = "MySQL-8"
-# # is_ha_cluster  = true
-# # disable_backup = true
-#  backup_schedule_frequency = 24
-#  backup_schedule_retention = 7
-# }
+resource "scaleway_rdb_instance" "Nextcloud-DB1" {
+ name           = "Nextcloud-DB1"
+ node_type      = "DB-GP-XS"
+ engine         = "MySQL-8"
+# is_ha_cluster  = true
+# disable_backup = true
+ backup_schedule_frequency = 24
+ backup_schedule_retention = 7
+}
 
-# resource "scaleway_rdb_user" "nextcloud_user_db" {
-#   instance_id = scaleway_rdb_instance.Nextcloud-DB1.id
-#   name        = "DBAdmin"
-#   password    = "Epsi2022!DB"
-#   is_admin    = true
-# }
+resource "scaleway_rdb_user" "nextcloud_user_db" {
+  instance_id = scaleway_rdb_instance.Nextcloud-DB1.id
+  name        = "DBAdmin"
+  password    = "Epsi2022!DB"
+  is_admin    = true
+}
 
-# resource "scaleway_rdb_database" "nextcloud_db" {
-#   instance_id = scaleway_rdb_instance.Nextcloud-DB1.id
-#   name        = "nextcloud_db"
-# }
+resource "scaleway_rdb_database" "nextcloud_db" {
+  instance_id = scaleway_rdb_instance.Nextcloud-DB1.id
+  name        = "nextcloud_db"
+}
 
 resource "scaleway_instance_server" "Nextcloud" {
   name = "Nextcloud"

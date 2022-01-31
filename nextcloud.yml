@@ -26,6 +26,7 @@
       - php-imagick
       - php-xml
       - php-zip
+    nextcloud_verison: "21.0.1"
 
   tasks:
     - name: Création de l'utilisateur Nextcloud
@@ -40,7 +41,7 @@
 
     - name: Telecharger Nextcloud
       unarchive:
-        src: https://download.nextcloud.com/server/releases/nextcloud-21.0.1.zip
+        src: https://download.nextcloud.com/server/releases/nextcloud-{{ nextcloud_verison }}.zip
         dest: /tmp/
         remote_src: yes
         validate_certs: false
