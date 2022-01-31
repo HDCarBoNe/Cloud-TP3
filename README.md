@@ -48,7 +48,7 @@ Des scripts Ansible accompagne le script terraform:
 
 /!\ Problème Configuraiton des domaines autorisés
 Solution temporaire (à faire après l'exécution des scripts):
-````bash
+```bash
 ssh root@<IP_PUBLIC_NEXTCLOUD>
 vi /var/www/html/nextlcoud/config/config.php
 #Dans la section
@@ -69,7 +69,9 @@ vi /var/www/html/nextlcoud/config/config.php
 # 'overwrite.cli.url' => 'http://localhost',
 # Par
 # 'overwrite.cli.url' => 'http://<IP_PUBLIC_NEXTCLOUD>/nextcloud',
+
 ```
+
 ---
 ## Accéder aux applications
 
