@@ -9,6 +9,7 @@ Installation et execution des scripts:
 ```bash
 git clone https://github.com/HDCarBoNe/Cloud-TP3.git
 cd Cloud-TP3
+terraform init
 terraform apply --auto-approve
 ```
 
@@ -18,8 +19,10 @@ Le script terraform permet le déployement sur le provider scaleway:
 - [x] Un volume pour les données de Nextcloud
 - [x] Une instance Grafana
 - [x] Une instance Nextcloud
-- [ ] Une base de données
+- [x] Une base de données
 - [ ] Un load balancer
+- [ ] Associé le volume Nextcloud à l'instance
+- [ ] Monter une infrastructure de haute disponibilité dans une autre zone
 
 Des scripts Ansible accompagne le script terraform:
 
@@ -41,6 +44,20 @@ Des scripts Ansible accompagne le script terraform:
     - [ ] Configuration de la base de données 
     - [ ] Installation de node_exporter
 
+---
+## Accéder aux applications
+
+    - Se rendre sur l'adresse IP publique de nextcloud `http://<IP>/nextcloud`
+    ```bash
+    terraform output scaleway_instance_server.Nextcloud.public_ip
+    ```
+
+    - Se rendre sur l'adresse IP publique de grafana `http://<IP>:3000`
+    ```bash
+    terraform output scaleway_instance_server.Grafana.public_ip
+    ```
+        + Login: admin
+        + Mot de passe: Epsi2022!123 #Variable par défaut
 ---
 
 ## Variables
@@ -72,4 +89,44 @@ prometheus_scrape_interval: "30s"
 Version de Nextlcoud:
 ```yml
 nextcloud_verison: "21.0.1"
+```
+
+Adresse IP local de la base de données scaleway:
+```yml
+nextcloud_db_host: "192.168.1.254:3306"
+```
+
+Nom de la base de données:
+```yml
+nextcloud_db_name: "nextcloud_db"
+```
+
+Nom d'utilisateur de la base de données:
+```yml
+nextcloud_db_admin: "DBAdmin"
+```
+
+Mot de passe de l'utilisateur de la base de données:
+```yml
+nextcloud_db_pwd: "Epsi2022!DB"
+```
+
+Nom d'utilisateur Nextlcoud:
+```yml
+nextcloud_admin_name: "NCAdmin"
+```
+
+Mot de passe de l'utilisateur Nextlcoud:
+```yml
+nextcloud_admin_pwd: "Epsi2022!NC"
+```
+
+Dossier ou sont enregistré les documents hébergé par Nextcloud:
+```yml
+nextcloud_data_dir: "/data"
+```
+
+Dossier où est hébergé la WebUI de Nextlcoud:
+```yml
+nextcloud_webroot: "/var/www/html/nextcloud/"
 ```
