@@ -21,7 +21,7 @@ Le script terraform permet le déployement sur le provider scaleway:
 - [x] Une instance Nextcloud
 - [x] Une base de données
 - [ ] Un load balancer
-- [ ] Associé le volume Nextcloud à l'instance
+- [x] Associé le volume Nextcloud à l'instance
 - [ ] Monter une infrastructure de haute disponibilité dans une autre zone
 
 Des scripts Ansible accompagne le script terraform:
@@ -41,7 +41,9 @@ Des scripts Ansible accompagne le script terraform:
     - [x] Création de l'utilisateur nextcloud sur l'instance déployer
     - [x] Installation d'Apache2
     - [x] Installation de nextlcoud  
-    - [ ] Configuration de la base de données 
+    - [x] Configuration de la base de données
+    - [x] Ajout du disque de data supplémentaires
+    - [ ] Configuration des domaines autorisés 
     - [ ] Installation de node_exporter
 
 ---
@@ -57,8 +59,8 @@ terraform output scaleway_instance_server.Nextcloud.public_ip
 terraform output scaleway_instance_server.Grafana.public_ip
 ```
 
-  - Login: admin
-  - Mot de passe: Epsi2022!123 #Variable par défaut
+- Login: admin
+- Mot de passe: Epsi2022!123 #Variable par défaut
 
 ---
 
