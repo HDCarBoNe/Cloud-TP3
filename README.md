@@ -57,8 +57,8 @@ terraform output scaleway_instance_server.Nextcloud.public_ip
 terraform output scaleway_instance_server.Grafana.public_ip
 ```
 
-  + Login: admin
-  + Mot de passe: Epsi2022!123 #Variable par défaut
+  - Login: admin
+  - Mot de passe: Epsi2022!123 #Variable par défaut
 
 ---
 
