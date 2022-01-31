@@ -134,6 +134,6 @@
       shell: |
         chown -R www-data:www-data {{ nextcloud_webroot }}
         chmod -R 755 {{ nextcloud_webroot }}
-        chown -R www-data:www-data {{ nextcloud_data_dir}}
-        chmod -R 755 {{ nextcloud_data-dir }}
+        chown -R www-data:www-data {{ nextcloud_data_dir }}
+        chmod -R 755 {{ nextcloud_data_dir }}
       

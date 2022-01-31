@@ -46,6 +46,30 @@ Des scripts Ansible accompagne le script terraform:
     - [ ] Configuration des domaines autorisés 
     - [ ] Installation de node_exporter
 
+/!\ Problème Configuraiton des domaines autorisés
+Solution temporaire (à faire après l'exécution des scripts):
+````bash
+ssh root@<IP_PUBLIC_NEXTCLOUD>
+vi /var/www/html/nextlcoud/config/config.php
+#Dans la section
+#    'trusted_domains' =>
+#  array (
+#    0 => 'localhost',
+#  ),
+#
+# Ajouter l'adresse IP publique de l'instance Nextcloud
+#
+#   'trusted_domains' =>
+#  array (
+#    0 => 'localhost',
+#    1 => '<IP_PUBLIC_NEXTCLOUD>'
+#  ),
+#
+# Remplacer
+# 'overwrite.cli.url' => 'http://localhost',
+# Par
+# 'overwrite.cli.url' => 'http://<IP_PUBLIC_NEXTCLOUD>/nextcloud',
+```
 ---
 ## Accéder aux applications
 
