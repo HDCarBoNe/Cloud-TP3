@@ -47,17 +47,18 @@ Des scripts Ansible accompagne le script terraform:
 ---
 ## Accéder aux applications
 
-    - Se rendre sur l'adresse IP publique de nextcloud `http://<IP>/nextcloud`
-    ```bash
-    terraform output scaleway_instance_server.Nextcloud.public_ip
-    ```
+- Se rendre sur l'adresse IP publique de nextcloud `http://<IP>/nextcloud`
+```bash
+terraform output scaleway_instance_server.Nextcloud.public_ip
+```
 
-    - Se rendre sur l'adresse IP publique de grafana `http://<IP>:3000`
-    ```bash
-    terraform output scaleway_instance_server.Grafana.public_ip
-    ```
-        + Login: admin
-        + Mot de passe: Epsi2022!123 #Variable par défaut
+- Se rendre sur l'adresse IP publique de grafana `http://<IP>:3000`
+```bash
+terraform output scaleway_instance_server.Grafana.public_ip
+```
+    + Login: admin
+    + Mot de passe: Epsi2022!123 #Variable par défaut
+
 ---
 
 ## Variables
