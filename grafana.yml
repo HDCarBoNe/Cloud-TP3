@@ -19,7 +19,7 @@
     node_exporter_group: "{{ node_exporter_user }}"
     node_exporter_dir_conf: /etc/node_exporter
     prometheus_dir_config: "/etc/prometheus"
-    prometheus_rentention_time: "365d"
+    prometheus_retention_time: "365d"
     prometheus_scrape_interval: "30s"
     prometheus_node_exporter: true
     prometheus_node_exporter_group: "all"
@@ -95,10 +95,10 @@
 
     - name: Changement du mot de passe de connexion à grafana
       shell: "grafana-cli admin reset-admin-password {{ grafana_admin_pwd }}"
-      register: __comand_admin
+      register: __command_admin
       changed_when: __command_admin.rc !=0
 
-    - name: Création de l'utilisateur nod_exporter:
+    - name: Création de l'utilisateur nod_exporter
       user:
         name: "{{ node_exporter_user }}"
         append: true
@@ -134,6 +134,12 @@
       file:
         path: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/"
         state: absent
+
+    - name: Création du group prometheus
+      group:
+        name: prometheus
+        state: present
+
     - name: Création de l'utilisateur prometheus
       user:
         name: prometheus
@@ -157,17 +163,17 @@
 
     - meta: flush_handlers
 
-    - name: prometheus fichier de configuration
-      template:
-        src: prometheus.yml.j2
-        dest: "{{ prometheus_dir_config }}/prometheus.yml"
-        mode: 0755
-        owner: prometheus
-        group: prometheus
-      notify: reload_prometheus
+    # - name: prometheus fichier de configuration
+    #   template:
+    #     src: prometheus.yml.j2
+    #     dest: "{{ prometheus_dir_config }}/prometheus.yml"
+    #     mode: 0755
+    #     owner: prometheus
+    #     group: prometheus
+    #   notify: reload_prometheus
 
-    - name: Activation du service Prmetheus au démarre de l'instance
-      systemd: prometheus
+    - name: Activation du service Prometheus au démarre de l'instance
+      systemd:
         name: prometheus
         state: started
         enabled: yes
